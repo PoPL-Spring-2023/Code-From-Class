@@ -62,9 +62,44 @@ end
 ###  - work on many collections (Arrays, Hashes, Ranges, etc.)
 ###  - can make these work on our own classes as well!
 
-### each - yields successive elements
 a = [1, 3, 5, 7, 9]
 
-sum = 0
-a.each {|x| sum += x}
-puts sum
+### each - yields successive elements
+
+# sum = 0
+# a.each {|x| sum += x}
+# puts sum
+
+### find - finds the first element that makes a block true
+
+# puts a.find {|n| n > 4}
+
+### find_all - finds all elements that make a block true
+
+# print a.find_all {|n| n > 4}
+# puts
+
+## Finds all prime numbers less than 100
+# primes = (1..100).find_all do |num|
+#     divisors = (1..num).find_all {|divisor| num % divisor == 0}
+#     divisors.size == 2
+# end
+
+# print primes
+# puts
+
+### map (or collect) - creates a new array made by applying the block to each element
+
+# print a.map {|n| n * n}
+# puts
+
+# print a.map {|n| n.to_s + "<--- this is a number"}
+# puts
+
+### File IO
+### important to close files to make sure they're written properly
+### if you use a code block to open the file, this is done automatically!
+
+File.open("blocks.rb", 'r') do |file|
+    file.each {|line| puts line}
+end
