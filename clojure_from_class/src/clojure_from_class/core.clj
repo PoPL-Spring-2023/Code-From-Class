@@ -116,7 +116,7 @@ world"
   ;; => "hi5"
   
   (str "+" 2 3)
-  ;; => "clojure.core$_PLUS_@7a99dd9623"
+  ;; => "clojure.core$_PLUS_ @7a99dd9623"
   
   (str str)
   ;; => "clojure.core$str@709cf9f1"
@@ -158,22 +158,172 @@ world"
   
   ;; vectors: faster for indexed access, slower in other ways
   ;;  are arrays under the hood
-
+  
   [1 2 3]
   ;; => [1 2 3]
-
+  
   (vector 1 2 3)
   ;; => [1 2 3]
-
+  
   ;; we can mix datatypes in lists and vectors
   ;; ex: parametric polymorphism
   '(5 :cat "hi" [4 5 6] 3/5)
   ;; => (5 :cat "hi" [4 5 6] 3/5)
-
-
+  
+  ; Sequence functions:
+  (first '(:a :b :c :d :e))
+  ;; => :a
+  
+  (first [1 2 3])
+  ;; => 1
+  
+  (rest '(:a :b :c :d :e))
+  ;; => (:b :c :d :e)
+  
+  (count '(:a :b :c :d :e))
+  ;; => 5
+  
+  (nth '(:a :b :c :d :e) 3)
+  ;; => :d
+  
+  ;;; All parametric polymorphic
+  
+  (conj '(10 11 12) 4)
+  ;; => (4 10 11 12)
+  
+  (conj [10 11 12] 4)
+  ;; => [10 11 12 4]
+  
+  (concat '(1 2 3) '(:a :b :c))
+  ;; => (1 2 3 :a :b :c)
+  
+  (concat [1 2 3] [:a :b :c])
+  ;; => (1 2 3 :a :b :c)
+  
+  (vec (concat [1 2 3] [:a :b :c]))
+  ;; => [1 2 3 :a :b :c]
+  
+  (concat [1 2 3] '(1 2 3))
+  ;; => (1 2 3 1 2 3)
   
 
+  ;; let: allows you to assign values to symbols within a lexical
+  ;; context.
+  ;; You should use let all the time
+  ;; let only returns the last thing that happens in them
+  (let [nums '(7 2 3 3 1)
+        the-first (first nums)]
+    (rest nums)
+    (* the-first the-first))
+  ;; => 49
+  
+  nums
+  ;; => Syntax error compiling at (/Users/thelmuth/Documents/cs220-popl/code-from-class/clojure_from_class/src/clojure_from_class/core.clj:0:0).
+  ;;    Unable to resolve symbol: nums in this context
+  
+  'dog ;; symbol
+  ;; => dog
+  
+  :dog ;; keyword
+  ;; => :dog
+  
+  (let [nums '(7 2 3 3 1)
+        the-first (first nums)]
+    (vector 5
+            (let [answer (* the-first 100)]
+              (+ answer 1000))))
+ ;; => [5 1700]
+  
+  (let [nums '(7 2 3 3 1)
+        another [:hi :there]
+        third (conj nums 100)]
+    (println nums)
+    (println (conj nums 100))
+    (println nums)
+    (println another)
+    (rest nums))
+  ;; => (7 2 3 3 1)
+  
+  ;; create a global binding:
+  ;; should ONLY be used to create global constants
+  ;; should NEVER be used inside any other code
+  (def more-nums '(1 2 3 4 5))
 
+  more-nums
+  ;; => (1 2 3 4 5)
+  
+  (let [nums (rest more-nums)]
+    nums)
+  ;; => (2 3 4 5)
+  
+
+  ;; defn
+  ;; defines a function
+  (defn square
+    "Squares the input x; this is a docstring"
+    [x] ;; the parameter list
+    (* x x)) ;; the body
+  
+  (square 5)
+  ;; => 25
+  
+  (square 3.6)
+  ;; => 12.96
+  
+  (square (/ 2 3))
+  ;; => 4/9
+  
+  (square "hi there")
+  ;; => Execution error (ClassCastException) at clojure-from-class.core/square (REPL:265).
+  ;;    java.lang.String cannot be cast to java.lang.Number
+  
+  (defn print-strings-and-concat
+    "Like with let, defn can do multiple steps and then
+     return the last thing evaluated. Only the last thing
+     is returned."
+    [string1 string2]
+    (println string1)
+    (println string2)
+    (str string1 string2))
+
+  (print-strings-and-concat "hello" "world")
+  ;; => "helloworld"
+  
+  ; if: takes 3 arguments
+  ; if the first is true, it returns the second arg
+  ; if false, returns the third
+  (if (< 1 4)
+    (str 1 " is the smallest")
+    (str 4 " is the smallest"))
+  ;; => "1 is the smallest"
+  
+  (defn sphere-volume
+    "Calculates the volume of a sphere"
+    [radius]
+    (if (<= radius 0)
+      "You can't find the volume of a sphere with a negative radius"
+      (let [r-cubed (* radius radius radius)
+            volume (* 4/3 Math/PI r-cubed)]
+        volume)))
+  
+  (sphere-volume 5)
+  ;; => 523.5987755982987
+
+  (sphere-volume -4)
+  ;; => "You can't find the volume of a sphere with a negative radius"
+
+   (defn sphere-volume-with-negative
+     "Calculates the volume of a sphere"
+     [radius] 
+     (let [real-radius (if (<= radius 0)
+                         (- radius)
+                         radius)
+           r-cubed (* real-radius real-radius real-radius)
+           volume (* 4/3 Math/PI r-cubed)]
+       volume))
+  
+  (sphere-volume-with-negative -4)
+  ;; => 268.08257310632894
 
 
 
