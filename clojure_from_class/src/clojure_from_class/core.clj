@@ -1,4 +1,5 @@
-(ns clojure-from-class.core)
+(ns clojure-from-class.core
+  (:require clojure.repl))
 
 
 
@@ -325,6 +326,7 @@ world"
   (sphere-volume-with-negative -4)
   ;; => 268.08257310632894
 
+  (clojure.repl/doc sphere-volume-with-negative)
 
 
   )
