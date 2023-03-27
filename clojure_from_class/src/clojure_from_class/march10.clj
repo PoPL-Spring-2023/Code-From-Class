@@ -82,17 +82,5 @@ HW 5 released (later) today, due Monday a week after spring break ends
 ;;; making 2^50 recursive calls
 
 
-;; write our own reduce function
-
-(defn my-reduce
-  "Mimics behavior of reduce
-   This will be a multi-arity function - can take 2 or 3 params"
-  ([function coll]
-   (my-reduce function (first coll) (rest coll)))
-  ([function start-val coll]
-   
-   )
-  )
-
 
 
