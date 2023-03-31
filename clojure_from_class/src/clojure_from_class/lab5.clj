@@ -27,6 +27,7 @@
 ; otherwise. Write a recursive factorial function. Make sure (factorial 100) works!
 
 (defn factorial
+  "Computes the factorial of n recursively"
   [n]
   (loop [n n
          answer 1]
@@ -47,6 +48,7 @@
 ; functions, and think about what factorial does.
 
 (defn factorial-no-recursion
+  "Computes the factorial of n using apply"
   [n]
   (apply *' (range 1 (inc n))))
 
@@ -68,6 +70,7 @@
 ; to make it tail recursive!
 
 (defn my-filter
+  "Implements filter using recursion."
   [predicate coll]
   (loop [coll coll
          result '()]
@@ -91,6 +94,7 @@
 ; (without using the max function).
 
 (defn max-element
+  "Finds the maximum element of a list without using the max function."
   [coll]
   (reduce #(if (> %1 %2)
              %1
