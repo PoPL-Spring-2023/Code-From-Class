@@ -1,47 +1,5 @@
 (ns clojure-from-class.repl)
 
-;;;; TODO:
-; Work on term projects! Programming examples due 4/10
-; HW 6 out today, due next Friday
-; Reading: None
-
-
-;;;; What is a symbol?
-; Just a data type like everything else!
-; Something special happens when you evaluate one
-; When you evaluate a symbol, Clojure simply looks up the most
-; recent binding for it, and returns that instead
-
-;; keyword
-:horse
-
-;; symbol
-'horse
-
-(type 'horse)
-;; => clojure.lang.Symbol
-
-(def horse "Albert")
-;; => #'clojure-from-class.repl/horse
-
-horse
-;; => "Albert"
-
-'horse
-;; => horse
-
-(list 'horse 'penguin 'elephant)
-;; => (horse penguin elephant)
-
-(let [horse "Nancy"]
-  horse)
-;; => "Nancy"
-
-(type horse)
-;; => java.lang.String
-
-
-
 ;; We want to write this REPL without using eval
 ;; eval does 2 primary things:
 ;;  1. Evaluates the data structure/code and returns the result.
@@ -78,17 +36,28 @@ horse
 
 
 (defn my-eval
-  ""
+  "Evaluates expression, changes environment, and returns resulting state
+   with :return set to returned value.
+    - state should be a map with a :environment key that stores all bindings,
+      and a :return key that stores the result of evaluation
+    - expression is the Clojure expression given to the REPL"
   [state expression]
   (if (not (seq? expression))
     ; THEN: Not a function call
-    (assoc state :return expression)
+    (if (symbol? expression)
+      (assoc state :return (get (:environment state) expression)) ; fetch binding of symbol
+      (assoc state :return expression)) ; return value of a literal
+
     ; ELSE: A function call
     (let [f (first expression)
           args (rest expression)]
       (cond
-        (= f '+) (assoc state :return (apply + args))
-
+        (= f '+) (assoc state :return (apply + (map #(:return (my-eval state %))
+                                                    args)))
+        (= f 'def) {:environment (assoc (:environment state)
+                                        (first args)
+                                        (:return (my-eval state (second args))))
+                    :return (first args)}
         :else (assoc state :return "Error: That function isn't defined.")))))
 
 (defn repl
@@ -112,5 +81,6 @@ horse
 
 (comment
   (main)
-  
+
+
   )
