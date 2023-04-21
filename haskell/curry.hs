@@ -34,3 +34,30 @@ divideBy14 x = div x 14
 
 divideBy14' = (`div` 14)
 
+-----------
+
+-- Anonymous functions
+
+-- (\x -> x + 3)
+---- equivalent to
+-- (+ 3)
+
+-- map (+ 3) [1..10]
+
+longWords words = filter (\w -> length w > 5) words
+
+-- more than 1 parameter: (\x y -> x + y)
+
+--- want to: find all even numbers between 1 and 10, square them, and find their sum
+
+-- sum (map (^ 2) (filter even [1..10]))
+
+--- Function application operator - $
+-- passes the result of one expression on the right to the one on the left
+
+sum $ map (^ 2) $ filter even [1..10]
+
+-- :t ($)
+-- ($) :: (a -> b) -> a -> b
+
+succ $ 5 + 4
