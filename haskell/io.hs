@@ -77,10 +77,49 @@ main4 = do
 
 -- Write a function that adds a user input number to the first 6 primes
 
-main = do
+main5 = do
     putStrLn "Enter a number please:"
     numStr <- getLine
     -- Use a let statement to bind variables to values:
     let addToInput x = x + (read numStr)
         mapped = map addToInput [2, 3, 5, 7, 11, 13]
     putStrLn $ "Adding " ++ numStr ++ " to the first 6 primes gives " ++ (show mapped)
+
+
+-- write a function that gets an integer from the user
+
+getInt :: IO Integer
+getInt = do
+    line <- getLine
+    return (read line :: Integer)
+
+main6 = do
+    putStr "Enter an integer: "
+    i <- getInt
+    putStrLn $ (show i) ++ " squared is " ++ (show $ i * i)
+
+-- return:
+-- takes a value and turns it into an IO action type of that value
+-- Since an IO action can get its value using <-, this works:
+
+main7 = do
+    a <- return "This"
+    b <- return " is silly"
+    putStrLn $ a ++ b
+
+
+-- getListOfStrings - gets a list of strings from the user, stopping at RET
+
+getListOfStrings :: IO [String]
+getListOfStrings = do
+    line <- getLine
+    if null line
+        then return []
+        else do
+            listOfStrings <- getListOfStrings
+            return (line : listOfStrings)
+
+main = do
+    putStrLn "Enter some strings:"
+    strings <- getListOfStrings
+    print strings
