@@ -1,98 +1,238 @@
-%% Equality is based on unification
 
-%% Lists in Prolog are similar to Haskell -- can get head and tail using
-%% pattern matching
+myMember(X, [X | _]).
+myMember(X, [_ | T]) :- myMember(X, T).
 
-myLength([], 0).
-myLength([H|T], Y) :- myLength(T, X), Y is X + 1.
+myAppend([], A, A).
+myAppend([H|T], A, [H|L]) :- myAppend(T, A, L).
 
+%% [a,b,c] ++ [d,e,f]
+%% L = [b,c] ++ [d,e,f] -- what does H need to be?
 
-%% Terminal copy/paste below
+% Find the middle element of an odd-length list
+middleElement(List, Middle) :- append(Start, [Middle | End], List),
+                               length(Start, Len),
+                               length(End, Len).
 
-?- a = a.
-true.
+% [a,b,c,d,e]
 
-?- a = b.
-false.
+%% lastElement - should find the last element in a list
+lastElement(List, Element) :- append(_, [Element], List).
 
-?- X = a.
-X = a.
+allButLast(List, AllBut) :- append(AllBut, [_], List).
 
-?- a = X.
-X = a.
+% ?- [a,b,c] = [Cat | Dog].
+% Cat = a,
+% Dog = [b, c].
 
-?- foo(a, b) = foo(X, Y).
-X = a,
-Y = b.
+% ?- member(b, [a,b,c,d]).
+% true ;
+% false.
 
-?- foo(a, B), foo(A, b).
-ERROR: Unknown procedure: foo/2 (DWIM could not correct goal)
-?- foo(a, B) = foo(A, b).
-B = b,
-A = a.
+% ?- member(b, [a,b,c,b]).
+% true ;
+% true.
 
-?- foo(a, b) = woozle(A, B).
-false.
+% ?- member(b, [a,b,c,b,w]).
+% true ;
+% true ;
+% false.
 
-?- A = B, B = zanzibar.
-A = B, B = zanzibar.
+% ?- member(e, [a,b,c,b,w]).
+% false.
 
-?- A = B, B = zanzibar, A = clinton.
-false.
+% ?- member(X, [a,b,c,d]).
+% X = a ;
+% X = b ;
+% X = c ;
+% X = d.
 
-?- (X, truck, van) = (car, Y, Z).
-X = car,
-Y = truck,
-Z = van.
+% ?- member(b, List).
+% List = [b|_] ;
+% List = [_, b|_] ;
+% List = [_, _, b|_] ;
+% List = [_, _, _, b|_] ;
+% List = [_, _, _, _, b|_] ;
+% List = [_, _, _, _, _, b|_] ;
+% List = [_, _, _, _, _, _, b|_] ;
+% List = [_, _, _, _, _, _, _, b|_] ;
+% List = [_, _, _, _, _, _, _, _, b|...] ;
+% List = [_, _, _, _, _, _, _, _, _|...] ;
+% List = [_, _, _, _, _, _, _, _, _|...] ;
+% List = [_, _, _, _, _, _, _, _, _|...] ;
+% List = [_, _, _, _, _, _, _, _, _|...] ;
+% List = [_, _, _, _, _, _, _, _, _|...] .
 
-?- (X, truck, Y) = (car, Y, Z).
-X = car,
-Y = Z, Z = truck.
+% ?- [lists].
+% true.
 
-?- (X, Z, Y) = (car, Y, truck).
-X = car,
-Z = Y, Y = truck.
+% ?- myMember(cat, [cat, dog, chicken]).
+% true.
 
-?- L = [a,b,c]
-|    .
-L = [a, b, c].
+% ?- [lists].
+% true.
 
-?- L = [a | [b,c]]
-|    .
-L = [a, b, c].
+% ?- myMember(cat, [cat, dog, chicken]).
+% true.
 
-?- L = [a,b | [c]].
-L = [a, b, c].
+% ?- myMember(dog, [cat, dog, chicken]).
+% false.
 
-?- [a,b,c,d] = [H | T].
-H = a,
-T = [b, c, d].
+% ?- [lists].
+% true.
 
-?- [a,b,5,7] = [H | T].
-H = a,
-T = [b, 5, 7].
+% ?- myMember(dog, [cat, dog, chicken]).
+% true ;
+% false.
 
-?- [a,b,5,7] = [R | Elephant].
-R = a,
-Elephant = [b, 5, 7].
+% ?- member(dog, [cat, dog, chicken]).
+% true ;
+% false.
 
-?- length([a,b,c]).
-ERROR: Unknown procedure: length/1
-ERROR:     However, there are definitions for:
-ERROR:         length/2
-false.
+% ?- myMember(X, [cat, dog, chicken]).
+% X = cat ;
+% X = dog ;
+% X = chicken ;
+% false.
 
-?- length([a,b,c], X).
-X = 3.
+% ?- myMember(Hamilton, [cat, dog, chicken]).
+% Hamilton = cat ;
+% Hamilton = dog ;
+% Hamilton = chicken ;
+% false.
 
-?- [a] = [H|T].
-H = a,
-T = [].
+% ?- [lists].
+% Warning: /Users/thelmuth/Documents/cs220-popl/code-from-class/prolog/lists.pl:3:
+% Warning:    Singleton variables: [H]
+% true.
 
-?- [lists].
-Warning: /Users/thelmuth/Documents/cs220-popl/code-from-class/prolog/lists.pl:7:
-Warning:    Singleton variables: [H]
-true.
+% ?- myMember(cat, [cat, dog, chicken, cat]).
+% true ;
+% true ;
+% false.
 
-?- myLength([a,b,c], X).
-X = 3.
+% ?- append([a,b], [c,d], [a,b,c,d]).
+% true.
+
+% ?- append([a,b], [c,d], List).
+% List = [a, b, c, d].
+
+% ?- append(W, [c,d], [a,b,c,d]).
+% W = [a, b] ;
+% false.
+
+% ?- append([a,b], Z, [a,b,c,d]).
+% Z = [c, d].
+
+% ?- append(A, B, [a,b,c,d]).
+% A = [],
+% B = [a, b, c, d] ;
+% A = [a],
+% B = [b, c, d] ;
+% A = [a, b],
+% B = [c, d] ;
+% A = [a, b, c],
+% B = [d] ;
+% A = [a, b, c, d],
+% B = [] ;
+% false.
+
+% ?- [lists].
+% true.
+
+% ?- myAppend([a,b], [c,d], Cat).
+% Cat = [a, b, c, d].
+
+% ?- myAppend([a,b], [], Cat).
+% Cat = [a, b].
+
+% ?- myAppend(X, Y, [a,b,c,d]).
+% X = [],
+% Y = [a, b, c, d] ;
+% X = [a],
+% Y = [b, c, d] ;
+% X = [a, b],
+% Y = [c, d] ;
+% X = [a, b, c],
+% Y = [d] ;
+% X = [a, b, c, d],
+% Y = [] ;
+% false.
+
+% ?- [lists].
+% true.
+
+% ?- middleElement([a,b,c,d,e], X).
+% X = c ;
+% false.
+
+% ?- middleElement(List, t).
+% List = [t] ;
+% List = [_, t, _] ;
+% List = [_, _, t, _, _] ;
+% List = [_, _, _, t, _, _, _] ;
+% List = [_, _, _, _, t, _, _, _, _] ;
+% List = [_, _, _, _, _, t, _, _, _|...] ;
+% List = [_, _, _, _, _, _, t, _, _|...] ;
+% List = [_, _, _, _, _, _, _, t, _|...] .
+
+% ?- [lists].
+% Warning: /Users/thelmuth/Documents/cs220-popl/code-from-class/prolog/lists.pl:16:
+% Warning:    Singleton variables: [Begin]
+% true.
+
+% ?- [lists].
+% true.
+
+% ?- lastElement([a,b,c,d], X).
+% X = d ;
+% false.
+
+% ?- [lists].
+% true.
+
+% ?- lastElement([a,b,c,d], X).
+% X = [d] ;
+% false.
+
+% ?- [lists].
+% true.
+
+% ?- allButLast([a,b,c,d], X).
+% X = [a, b, c] ;
+% false.
+
+% ?- [lists].
+% true.
+
+% ?- allButLast([a,b,c,d], X).
+% X = [] ;
+% X = [a] ;
+% X = [a, b] ;
+% X = [a, b, c] ;
+% X = [a, b, c, d] ;
+% false.
+
+% ?- allButLast([a,b,c,[d]], X).
+% X = [] 
+% ERROR: Type error: `character_code' expected, found `-1' (an integer)
+% ERROR: In:
+% ERROR:   [11] char_code(_1810,-1)
+% ERROR:   [10] '$in_reply'(-1,'?h') at /usr/local/Cellar/swi-prolog/9.0.4/libexec/lib/swipl/boot/init.pl:1037
+% ?- [lists].
+% true.
+
+% ?- allButLast([a,b,c,[d]], X).
+% X = [a, b, c] ;
+% false.
+
+% ?- X is 5 + 6.
+% X = 11.
+
+% ?- 11 is 5 + X.
+% ERROR: Arguments are not sufficiently instantiated
+% ERROR: In:
+% ERROR:   [10] 11 is 5+_8492
+% ERROR:    [9] toplevel_call(user:user: ...) at /usr/local/Cellar/swi-prolog/9.0.4/libexec/lib/swipl/boot/toplevel.pl:1173
+% ?- X = 6, Y is 5 + X.
+% X = 6,
+% Y = 11.
